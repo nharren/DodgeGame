@@ -1,0 +1,62 @@
+/** A sufficiently-random number generator */
+class Random {
+  field Array _numbers;
+  field int _index;
+
+  /** Constructs a pseudo-random number generator */
+  constructor Random new() {
+    let _numbers = Array.new(32);
+    let _numbers[0] = 3;
+    let _numbers[1] = 4;
+    let _numbers[2] = 2;
+    let _numbers[3] = 3;
+    let _numbers[4] = 1;
+    let _numbers[5] = 0;
+    let _numbers[6] = 3;
+    let _numbers[7] = 4;
+    let _numbers[8] = 1;
+    let _numbers[9] = 2;
+    let _numbers[10] = 0;
+    let _numbers[11] = 4;
+    let _numbers[12] = 1;
+    let _numbers[13] = 3;
+    let _numbers[14] = 2;
+    let _numbers[15] = 4;
+    let _numbers[16] = 0;
+    let _numbers[17] = 1;
+    let _numbers[18] = 4;
+    let _numbers[19] = 2;
+    let _numbers[20] = 3;
+    let _numbers[21] = 2;
+    let _numbers[22] = 0;
+    let _numbers[23] = 3;
+    let _numbers[24] = 0;
+    let _numbers[25] = 4;
+    let _numbers[26] = 1;
+    let _numbers[27] = 0;
+    let _numbers[28] = 4;
+    let _numbers[29] = 2;
+    let _numbers[30] = 3;
+    let _numbers[31] = 4;
+    let _index = -1;
+    return this;
+  }
+
+  /** Disposes this psuedo-random number generator */
+  method void dispose() {
+    do _numbers.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  /** Returns the next psuedo-random number */
+  method int next() {
+    let _index = _index + 1;
+
+    if (_index > 31) {
+      let _index = 0;
+    }
+
+    return _numbers[_index];
+  }
+}

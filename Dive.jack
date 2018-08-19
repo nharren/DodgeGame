@@ -1,0 +1,163 @@
+/** Represents a dive game */
+class Dive {
+  field PlatformGenerator _platformGenerator;
+  field Array _platforms;
+  field boolean _gameOver;
+  field int _tickDelayMilliseconds;
+  field int _ticksToAdvance;
+  field int _ticks;
+  field Random _random;
+
+  /** Constructs a game */
+  constructor Dive new() {
+    let _random = Random.new();
+    let _platforms = Array.new(3);
+    let _platforms[0] = Platform.new();
+    let _platforms[1] = Platform.new();
+    let _platforms[2] = Platform.new();
+    do reset();
+    return this;
+  }
+
+  /** Disposes the game */
+  method void dispose() {
+    do _random.dispose();
+    do _platforms.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  /** Starts the game */
+  method void start() {
+
+    while (~_gameOver) {
+      do tick();
+      
+      let _ticks = _ticks + 1;
+      let _ticksToAdvance = _ticksToAdvance - 1;
+      
+      if (_ticksToAdvance = 0) {
+        do advance();
+      }
+
+      do Sys.wait(_tickDelayMilliseconds);
+    }
+
+    return;
+  }
+
+  /** Advances the current game level */
+  method void advance() {
+    let _tickDelayMilliseconds = _tickDelayMilliseconds - 10;
+    let _ticksToAdvance = 1000;
+    return;
+  }
+
+  /** Starts the game */
+  method void tick() {
+    var Platform platform;
+    var int index;
+    var int newRow;
+
+    do Screen.clearScreen();
+    
+    let index = 0;
+
+    while (index < 3) {
+      let platform = _platforms[index];
+      let newRow = platform.getRow() - 1;
+
+      // Recycle the platform if it moves off-screen.
+      if (newRow < 0) {
+        do platform.setLeftGap(_random.next());
+        do platform.setRightGap(_random.next());
+        do platform.setRow(17);
+      }
+      else {
+        do platform.setRow(newRow);
+        
+        if (newRow < 16) {
+          do drawPlatform(platform);
+        }
+      }
+
+      let index = index + 1;
+    }
+
+    return;
+  }
+
+  /** Draws a platform */
+  method void drawPlatform(Platform platform) {
+    var int y1;
+    var int y2;
+    var int x1;
+    var int x2;
+    var int leftGap;
+    var int rightGap;
+    
+    do Screen.setColor(true);
+
+    // Fill row
+    let y1 = platform.getRow() * 16;
+    let y2 = y1 + 15;
+    do Screen.drawRectangle(0, y1, 511, y2);
+
+    do Screen.setColor(false);
+
+    // Draw first gap
+    let leftGap = platform.getLeftGap();
+    if (leftGap < 4) {
+      let x1 = leftGap * 64;
+      let x2 = x1 + 63;
+      do Screen.drawRectangle(x1, y1, x2, y2);
+    }
+
+    // Draw second gap
+    let rightGap = platform.getRightGap();
+    if (rightGap < 4) {
+      let x1 = 256 + (rightGap * 64);
+      let x2 = x1 + 63;
+      do Screen.drawRectangle(x1, y1, x2, y2);
+    } else {
+      // Prevent scenario when both gaps are closed
+      if (leftGap = 4) {
+        do platform.setRightGap(3);
+        let rightGap = 3;
+        let x1 = 256 + (rightGap * 64);
+        let x2 = x1 + 63;
+        do Screen.drawRectangle(x1, y1, x2, y2);
+      }
+    }
+
+    return;
+  }
+
+  /** Resets the game */
+  method void reset() {
+    var Platform platform;
+
+    let _gameOver = false;
+    let _tickDelayMilliseconds = 250;
+    let _ticks = 0;
+    let _ticksToAdvance = 1000;
+
+    let platform = _platforms[0];
+    do platform.setLeftGap(_random.next());
+    do platform.setRightGap(_random.next());
+    do platform.setRow(12);
+
+    let platform = _platforms[1];
+    do platform.setLeftGap(_random.next());
+    do platform.setRightGap(_random.next());
+    do platform.setRow(18);
+
+    let platform = _platforms[2];
+    do platform.setLeftGap(_random.next());
+    do platform.setRightGap(_random.next());
+    do platform.setRow(24);
+
+    return;
+  }
+}
+

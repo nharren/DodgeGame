@@ -1,0 +1,8 @@
+class Main {
+  function void main() {
+    var Dive dive;
+    let dive = Dive.new();
+    do dive.start();
+    return;
+  }
+}
