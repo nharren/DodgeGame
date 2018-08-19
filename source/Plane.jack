@@ -14,15 +14,18 @@ class Plane {
     return;
   }
 
+  /** Gets the plane's current row */
   method int getRow() {
     return _row;
   }
 
+  /** Sets the plane's current row */
   method void setRow(int row) {
     let _row = row;
     return;
   }
 
+  /** Moves the plane up */
   method void moveUp() {
     if (_row > 0) {
       let _row = _row - 1;
@@ -31,6 +34,7 @@ class Plane {
     return;
   }
 
+  /** Determines if the plane can move up */
   method bool canMoveUp() {
     var int memAddress;
 
@@ -41,6 +45,7 @@ class Plane {
     return Grid.isCellClear(_row - 1, 5);
   }
 
+  /** Moves the plane down */
   method void moveDown() {
     if (_row < 15) {
       let _row = _row + 1;
@@ -49,6 +54,7 @@ class Plane {
     return;
   }
 
+  /** Determines if the plane can move down */
   method bool canMoveDown() {
     var int memAddress;
 
