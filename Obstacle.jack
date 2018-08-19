@@ -1,0 +1,86 @@
+/** Represents an obstacle */
+class Obstacle {
+  field int _topGap;
+  field int _bottomGap;
+  field int _column;
+  static Random _random;
+
+  /** Constructs the obstacle */
+  constructor Obstacle new(Random random) {
+    let _topGap = 0;
+    let _bottomGap = 0;
+    let _column = 0;
+    let _random = random;
+    return this;
+  }
+
+  /** Disposes the obstacle */
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  /** Sets the column */
+  method void setColumn(int column) {
+    let _column = column;
+    return;
+  }
+
+  /** Moves the obstacle forward */
+  method void move() {
+    // Recycle the obstacle if it moves off-screen
+    if (_column < 1) {
+      do reset();
+      let _column = 35;
+    }
+    else {
+      let _column = _column - 1;
+    }
+
+    return;
+  }
+
+  /** Resets the gaps */
+  method void reset() {
+    let _topGap = _random.next();
+    let _bottomGap = _random.next();
+    return;
+  }
+
+  /** Draws the obstacle */
+  method void draw() {
+    var int y1;
+    var int y2;
+    var int x1;
+    var int x2;
+
+    if (_column > 31) {
+      return;
+    }
+    
+    do Screen.setColor(true);
+
+    // Fill the entire column
+    let x1 = _column * 16;
+    let x2 = x1 + 15;
+    do Screen.drawRectangle(x1, 0, x2, 255);
+
+    do Screen.setColor(false);
+
+    // Draw first gap
+    if (_topGap < 4) {
+      let y1 = _topGap * 32;
+      let y2 = y1 + 31;
+      do Screen.drawRectangle(x1, y1, x2, y2);
+    }
+
+    // Draw second gap
+    if (_bottomGap < 4) {
+      let y1 = 128 + (_bottomGap * 32);
+      let y2 = y1 + 31;
+      do Screen.drawRectangle(x1, y1, x2, y2);
+    }
+
+    return;
+  }
+}

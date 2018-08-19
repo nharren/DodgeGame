@@ -1,8 +1,11 @@
+/** Contains the main entry point for the application */
 class Main {
+  /** The main entry point for the application */
   function void main() {
-    var Dive dive;
-    let dive = Dive.new();
-    do dive.start();
+    var Dodge dodge;
+    let dodge = Dodge.new();
+    do dodge.start();
+    do dodge.dispose();
     return;
   }
 }

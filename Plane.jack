@@ -1,0 +1,84 @@
+/** Represents a plane */
+class Plane {
+  field int _row;
+
+  /** Constructs the plane */
+  constructor Plane new() {
+    let _row = 0;
+    return this;
+  }
+
+  /** Disposes the plane */
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method int getRow() {
+    return _row;
+  }
+
+  method void setRow(int row) {
+    let _row = row;
+    return;
+  }
+
+  method void moveUp() {
+    if (_row > 0) {
+      let _row = _row - 1;
+    }
+
+    return;
+  }
+
+  method bool canMoveUp() {
+    var int memAddress;
+
+    if (_row < 1) {
+      return true;
+    }
+
+    return Grid.isCellClear(_row - 1, 5);
+  }
+
+  method void moveDown() {
+    if (_row < 15) {
+      let _row = _row + 1;
+    }
+
+    return;
+  }
+
+  method bool canMoveDown() {
+    var int memAddress;
+
+    if (_row > 14) {
+      return true;
+    }
+
+    return Grid.isCellClear(_row + 1, 5);
+  }
+
+  /** Draws the plane */
+  method void draw() {
+    var int memAddress;
+    let memAddress = 16389 + (512 * _row); // 16384 base address + 5th column + 32 x 16 columns per row
+    do Memory.poke(memAddress + 0, 1016);
+    do Memory.poke(memAddress + 32, 48);
+    do Memory.poke(memAddress + 64, 112);
+    do Memory.poke(memAddress + 96, 240);
+    do Memory.poke(memAddress + 128, 496);
+    do Memory.poke(memAddress + 160, 1011);
+    do Memory.poke(memAddress + 192, 8183);
+    do Memory.poke(memAddress + 224, -1);
+    do Memory.poke(memAddress + 256, -1);
+    do Memory.poke(memAddress + 288, 8183);
+    do Memory.poke(memAddress + 320, 1011);
+    do Memory.poke(memAddress + 352, 496);
+    do Memory.poke(memAddress + 384, 240);
+    do Memory.poke(memAddress + 416, 112);
+    do Memory.poke(memAddress + 448, 48);
+    do Memory.poke(memAddress + 480, 1016);
+    return;
+  }
+}

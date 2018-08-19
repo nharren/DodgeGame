@@ -1,0 +1,33 @@
+/** A class for grid helper functions */
+class Grid {
+  /** Determines if the memory within a cell is clear */
+  function bool isCellClear(int row, int column) {
+    var int address;
+    var int sum;
+
+    let address = 16384 + column + (512 * row);
+
+    let sum = Memory.peek(address + 0)
+      + Memory.peek(address + 32)
+      + Memory.peek(address + 64)
+      + Memory.peek(address + 96)
+      + Memory.peek(address + 128)
+      + Memory.peek(address + 160)
+      + Memory.peek(address + 192)
+      + Memory.peek(address + 224)
+      + Memory.peek(address + 256)
+      + Memory.peek(address + 288)
+      + Memory.peek(address + 320)
+      + Memory.peek(address + 352)
+      + Memory.peek(address + 384)
+      + Memory.peek(address + 416)
+      + Memory.peek(address + 448)
+      + Memory.peek(address + 480);
+
+    if (sum = 0) {
+      return true;
+    }
+
+    return false;
+  }
+}

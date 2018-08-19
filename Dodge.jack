@@ -1,0 +1,194 @@
+/** Represents a dodge game */
+class Dodge {
+  field Random _random;
+  field Obstacle _obstacle1;
+  field Obstacle _obstacle2;
+  field Obstacle _obstacle3;
+  field Obstacle _obstacle4;
+  field Obstacle _obstacle5;
+  field Obstacle _obstacle6;
+  field boolean _gameOver;
+  field int _moveIntervalMilliseconds;
+  field int _movesToNextLevel;
+  field int _moves;
+  field int _level;
+  field Plane _plane;
+
+  /** Constructs a game */
+  constructor Dodge new() {
+    let _random = Random.new();
+    let _obstacle1 = Obstacle.new(_random);
+    let _obstacle2 = Obstacle.new(_random);
+    let _obstacle3 = Obstacle.new(_random);
+    let _obstacle4 = Obstacle.new(_random);
+    let _obstacle5 = Obstacle.new(_random);
+    let _obstacle6 = Obstacle.new(_random);
+    let _plane = Plane.new();
+    do reset();
+    return this;
+  }
+
+  /** Disposes the game */
+  method void dispose() {
+    do _random.dispose();
+    do _obstacle1.dispose();
+    do _obstacle2.dispose();
+    do _obstacle3.dispose();
+    do _obstacle4.dispose();
+    do _obstacle5.dispose();
+    do _obstacle6.dispose();
+    do _plane.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  /** Starts the game */
+  method void start() {
+    var int millisecond;
+
+    while (true) {
+      while (~_gameOver) {
+        do move();
+        
+        if (~_gameOver) {
+          let _moves = _moves + 1;
+          let _movesToNextLevel = _movesToNextLevel - 1;
+          
+          if (_movesToNextLevel = 0) {
+            let _moveIntervalMilliseconds = _moveIntervalMilliseconds - 25;
+            let _movesToNextLevel = 60;
+            let _level = _level + 1;
+          }
+
+          let millisecond = 0;
+
+          while (millisecond < _moveIntervalMilliseconds) {
+            do processKeypress();
+            do Sys.wait(100);
+            let millisecond = millisecond + 100;
+          }
+        }
+      }
+
+      do drawGameOver();
+
+      // Wait for the space key.
+      while (~(Keyboard.keyPressed() = 32)) {
+        do Sys.wait(50);
+      }
+
+      do reset();
+    }
+
+    return;
+  }
+
+  /** Moves the plane forward */
+  method void move() {
+    if (Grid.isCellClear(_plane.getRow(), 6)) {
+      do _obstacle1.move();
+      do _obstacle2.move();
+      do _obstacle3.move();
+      do _obstacle4.move();
+      do _obstacle5.move();
+      do _obstacle6.move();
+      do draw();
+    }
+    else {
+      // The plane has hit an obstacle head-on
+      let _gameOver = true;
+    }
+
+    return;
+  }
+
+  /** Draws the game's current state */
+  method void draw() {
+    do Screen.clearScreen();
+    do _obstacle1.draw();
+    do _obstacle2.draw();
+    do _obstacle3.draw();
+    do _obstacle4.draw();
+    do _obstacle5.draw();
+    do _obstacle6.draw();
+    do _plane.draw();
+    do drawScore();
+    return;
+  }
+
+  /** Draws the game over screen */
+  method void drawGameOver() {
+    do Output.moveCursor(9, 27);
+    do Output.printString("Game Over");
+    do Output.moveCursor(15, 19);
+    do Output.printString("Press Space to play again");
+    return;
+  }
+
+  /** Draws the score */
+  method void drawScore() {
+    do Output.moveCursor(0, 0);
+    do Output.printString("Level: ");
+    do Output.printInt(_level);
+    do Output.moveCursor(1, 0);
+    do Output.printString("Score: ");
+    do Output.printInt(_moves);
+    return;
+  }
+  /** Processes any recognized key presses */
+  method void processKeypress() {
+    var char keyPressed;
+    let keyPressed = Keyboard.keyPressed();
+
+    // Up arrow
+    if (keyPressed = 131) {
+      if (_plane.canMoveUp()) {
+        do _plane.moveUp();
+        do draw();
+      }
+      else {
+        // The plane has hit an obstacle from below.
+        let _gameOver = true;
+      }
+    }
+
+    // Down arrow
+    if (keyPressed = 133) {
+      if (_plane.canMoveDown()) {
+        do _plane.moveDown();
+        do draw();
+      }
+      else {
+        // The plane has hit an obstacle from above.
+        let _gameOver = true;
+      }
+    }
+
+    return;
+  }
+
+  /** Resets the game */
+  method void reset() {
+    let _gameOver = false;
+    let _moveIntervalMilliseconds = 500;
+    let _moves = 0;
+    let _movesToNextLevel = 60;
+    let _level = 1;
+    do _obstacle1.reset();
+    do _obstacle1.setColumn(12);
+    do _obstacle2.reset();
+    do _obstacle2.setColumn(18);
+    do _obstacle3.reset();
+    do _obstacle3.setColumn(24);
+    do _obstacle4.reset();
+    do _obstacle4.setColumn(30);
+    do _obstacle5.reset();
+    do _obstacle5.setColumn(36);
+    do _obstacle6.reset();
+    do _obstacle6.setColumn(42);
+    do _plane.setRow(7);
+    do _plane.draw();
+    return;
+  }
+}
+

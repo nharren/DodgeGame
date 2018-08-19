@@ -5,7 +5,7 @@ class Random {
 
   /** Constructs a pseudo-random number generator */
   constructor Random new() {
-    let _numbers = Array.new(32);
+    let _numbers = Array.new(31);
     let _numbers[0] = 3;
     let _numbers[1] = 4;
     let _numbers[2] = 2;
@@ -37,7 +37,6 @@ class Random {
     let _numbers[28] = 4;
     let _numbers[29] = 2;
     let _numbers[30] = 3;
-    let _numbers[31] = 4;
     let _index = -1;
     return this;
   }
